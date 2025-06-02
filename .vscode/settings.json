@@ -1,0 +1,7 @@
+{
+  "auto-commit.commitMessageLanguage": "English",
+  "auto-commit.commitMessageMaxChars": 100,
+  "auto-commit.emojiEnabled": true,
+  "auto-commit.maxFileChangesChars": 4000,
+  "auto-commit.openaiApiKey": "sk-xxxxxxxx"
+}
