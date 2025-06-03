@@ -1,52 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
+  <meta charset="UTF-8" />
+  <title>Bảng điều khiển quản lý tiền lương</title>
+  <link rel="stylesheet" href="Dash_Board_Year.css" />
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script src="Dash_Board_Year.js" defer></script>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Baloo 2', cursive;
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      background: linear-gradient(to bottom, #f0f4f8, #a0b8c8);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-    }
-    .header {
-      background-color: #324b5c;
-      width: 100%;
-      padding: 20px;
-      color: white;
-      text-align: center;
-      font-size: 24px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
-    }
-    .chart-container {
-      width: 90%;
-      max-width: 1000px;
-      background: white;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      border-radius: 12px;
-      overflow-x: auto;
-    }
-    #chart_inner {
-      width: calc(80px * 30);
-      height: 500px;
-    }
-  </style>
 </head>
 <body>
-  <div class="header">
-    Đây là tiêu đề hoặc logo
-  </div>
-  <div class="chart-container">
-    <div id="chart_inner"></div>
-  </div>
+  <header class="dashboard-header">
+    <h1>🌓 bảng điều khiển quản lý tiền lương</h1>
+  </header>
+
+  <main class="main-content">
+    <!-- Phần Tổng Lương -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Tổng Lương</h2>
+        <span class="salary">11,123,555 đ</span>
+      </div>
+
+      <div class="card-body">
+        <h3>Giờ Làm Mỗi Người</h3>
+        <div id="chart_inner" class="scrollable-chart">
+          <!-- Google Chart sẽ render tại đây -->
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span>Tổng Quan</span>
+      </div>
+    </section>
+
+    <!-- Phần Lịch -->
+    <aside class="calendar">
+      <h3>Month 1</h3>
+      <div id="day-grid" class="calendar-grid"></div>
+      <div class="calendar-footer">
+        <p><strong>Start Day:</strong> <span id="start-day">01/01/2025</span></p>
+        <p><strong>End Day:</strong> <span id="end-day">31/01/2025</span></p>
+        <button class="goto-btn">Go To Year</button>
+      </div>
+    </aside>
+  </main>
+
+  <script src="Dash_Board_Year.js"></script>
 </body>
 </html>
