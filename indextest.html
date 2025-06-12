@@ -1,0 +1,32 @@
+<!-- File Index.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+  </head>
+  <body>
+    <h2>🧹 Xóa dữ liệu</h2>
+    <button onclick="deleteData()">Xóa ngay</button>
+    <pre id="result"></pre>
+
+    <script>
+      function deleteData() {
+        const payload = {
+          sheetId: "1bv0_DB47DF8YBiPJnTHw434H1RBQv3q88lPXNJmbGrk",
+          sheetNames: Array.from({ length: 31 }, (_, i) => `Day ${i + 1}`),
+          range: "E5:M34"
+        };
+
+        document.getElementById("result").textContent = "Đang xóa...";
+
+        google.script.run.withSuccessHandler(function(res) {
+          if (res.success) {
+            document.getElementById("result").textContent = `✅ Đã xoá: ${res.cleared.join(", ")}`;
+          } else {
+            document.getElementById("result").textContent = `❌ Lỗi: ${res.error}`;
+          }
+        }).multiDeleteHandler(payload);
+      }
+    </script>
+  </body>
+</html>
