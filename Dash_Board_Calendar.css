@@ -16,7 +16,7 @@
 
   padding: 20px;
   width: 500px;
-  height: 660px;
+  height: 590px;
   flex: 1 1 100%;
 
   position: absolute;
@@ -311,7 +311,7 @@
   font-family: 'Baloo', sans-serif;
   text-align: center;
   font-weight: bold;
-  height: 70px;
+  height: 80px;
   width: 100%;
   margin-bottom: 10px;
   cursor: pointer;           /* Cho biết đây là phần có thể click */
@@ -481,7 +481,7 @@
 .calendar-day.last-31 {
   position:absolute;
   width: 435px;
-  height: 55px;
+  height: 60px;
   font-size: 3rem;
   font-weight:500;
   background-color: #edeff3;
@@ -507,45 +507,3 @@
   color: #ffffff;
   text-shadow: 0px 4px 1px rgba(200, 200, 200, 0.75);
 }
-
-
-/* ------------------- Delete Time Button ------------------- */
-
-.delete-shape {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 20px;
-  transform: translateY(70px);
-  width: 415px;
-  height: 55px;
-
- 
-  background:rgba(199, 208, 222, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  color: white;
-  font-size: 2.5rem;
-  font-weight: 550;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  font-family: 'Baloo', cursive;
-  user-select: none;
-  transition: all 0.5s ease, text-shadow 1s ease;
-
-  display: none; /* Ẩn ban đầu */
-}
-
-.delete-shape:hover {
-  transform: translateY(75px) scale(1.025);
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 1);
-  box-shadow: 0 5px 5px rgba(222, 222, 222, 1);
-  color: rgb(100, 100, 100);
-  text-shadow: 0px 5px 1px rgba(175, 175, 175, 1);
-  background: radial-gradient(circle, rgba(199, 208, 222, 0.75) 0%, rgba(199, 208, 222, 0) 75%);
-}
-

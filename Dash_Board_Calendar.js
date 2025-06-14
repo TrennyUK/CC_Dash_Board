@@ -265,9 +265,6 @@ selected.addEventListener("click", e => {
   picker.classList.toggle("show");
   isPickerOpen = picker.classList.contains("show");
 
-  // Hiện nút delete nếu picker đang mở
-  const deleteBtn = document.getElementById("deleteButton");
-  deleteBtn.style.display = isPickerOpen ? "flex" : "none";
 
   if (isPickerOpen) {
     if (!itemHeight) itemHeight = list.children[0].offsetHeight;
@@ -283,31 +280,6 @@ selected.addEventListener("click", e => {
   }
 });
 
-// Gắn sự kiện cho nút Delete Time
-deleteButton.addEventListener("click", async () => {
-  const currentMonthName = selected.textContent; // Lấy tên tháng hiện tại từ selectedMonth
-  const sheetIdForMonth = sheetLinks[currentMonthName]; // Lấy ID Google Sheet của tháng
-
-  if (!sheetIdForMonth) {
-    alert("Không tìm thấy ID Sheet cho tháng này.");
-    return;
-  }
-
-  const confirmDelete = confirm(`Bạn có chắc chắn muốn xóa tất cả dữ liệu Giờ làm (E5:M34) từ Day 1 đến Day 31 của tháng "${currentMonthName}" không? Hành động này không thể hoàn tác!`);
-
-  if (confirmDelete) {
-    const startDay = 1;
-    const endDay = 31;
-    const rangeToClear = 'E5:M34';
-    // GỌI HÀM clearSheetRange TỪ Dash_Board_Chart.js (vì nó đã được tải)
-    if (typeof clearSheetRange === 'function') { // Kiểm tra để đảm bảo hàm tồn tại
-        await clearSheetRange(sheetIdForMonth, currentMonthName, startDay, endDay, rangeToClear);
-    } else {
-        console.error("Hàm 'clearSheetRange' không được tìm thấy. Đảm bảo Dash_Board_Chart.js được tải trước.");
-        alert("Có lỗi nội bộ. Vui lòng thử lại sau.");
-    }
-  }
-});
 
 
 document.addEventListener("click", e => {
