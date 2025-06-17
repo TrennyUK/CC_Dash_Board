@@ -1,4 +1,65 @@
 
+// Ngăn phóng to/thu nhỏ bằng Ctrl + +/- hoặc Ctrl + cuộn chuột
+window.addEventListener('wheel', e => {
+  if (e.ctrlKey) e.preventDefault();
+}, { passive: false });
+
+window.addEventListener('keydown', e => {
+  // Chặn Ctrl + (+/-/=), Ctrl + U, Ctrl + S, F12
+  if (
+    (e.ctrlKey && ['+', '-', '=', '0', 'u', 's'].includes(e.key.toLowerCase())) ||
+    e.key === 'F12'
+  ) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+});
+
+// Luôn ép zoom về 100% khi mới vào và khi có thay đổi
+function enforceZoom100() {
+  document.body.style.zoom = '100%';
+  document.body.style.transform = 'scale(1)';
+  document.body.style.transformOrigin = 'top left';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  enforceZoom100();
+
+  // Lặp lại liên tục để ép về 100% nếu bị thay đổi
+  setInterval(() => {
+    enforceZoom100();
+  }, 500);
+});
+
+// Tạo overlay cảnh báo nếu DevTools bị mở
+const overlay = document.createElement('div');
+overlay.style.position = 'fixed';
+overlay.style.top = '0';
+overlay.style.left = '0';
+overlay.style.width = '100%';
+overlay.style.height = '100%';
+overlay.style.background = 'rgba(0, 0, 0, 0.8)';
+overlay.style.backdropFilter = 'blur(8px)';
+overlay.style.display = 'none';
+overlay.style.zIndex = '99999';
+overlay.style.justifyContent = 'center';
+overlay.style.alignItems = 'center';
+overlay.style.color = 'white';
+overlay.style.fontFamily = '"Baloo", sans-serif';
+overlay.style.fontWeight = 'bold';
+overlay.style.fontSize = '2em';
+overlay.innerText = 'Bạn đang mở Dev Tool!';
+document.body.appendChild(overlay);
+
+// Phát hiện DevTools mở và bật overlay
+setInterval(() => {
+  const isDevToolsOpen = (
+    window.outerWidth - window.innerWidth > 160 ||
+    window.outerHeight - window.innerHeight > 160
+  );
+  overlay.style.display = isDevToolsOpen ? 'flex' : 'none';
+}, 500);
 
 
 //link Go To Year:  

@@ -1,29 +1,44 @@
 // Mảng tháng gốc
 const originalMonths = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
 ];
 
 // ID Google Sheets từng tháng
 const sheetLinks = {
-  "January":   "1bv0_DB47DF8YBiPJnTHw434H1RBQv3q88lPXNJmbGrk",
-  "February":  "1aBcD_EFgHiJkLmNoPqRsTuVwXyZ0123456789abcdE",
-  "March":     "1bBcD_EFgHiJkLmNoPqRsTuWwXyZ0123456789abcdF",
-  "April":     "1cBcD_EFgHiJkLmNoPqRsTuWwXyZ0123456789abcdG",
-  "May":       "1dBcD_EFgHiJkLmNoPqRsTuWwXyZ0123456789abcdH",
-  "June":      "1eBcD_EFgHiJkLmNoPqRsTuWwXyZ0123456789abcdI",
-  "July":      "1fBcD_EFgHiJkLmNoPqRsTuWwXyZ0123456789abcdJ",
-  "August":    "1gBcD_EFgHiJkLmNoPqRsTuWwXyZ0123456789abcdK",
-  "September": "1hBcD_EFgHiJkLmNoPqRsTuWwXyZ0123456789abcdL",
-  "October":   "1iBcD_EFgHiJkLmNoPqRsTuWwXyZ0123456789abcdM",
-  "November":  "1jBcD_EFgHiJkLmNoPqRsTuWwXyZ0123456789abcdN",
-  "December":  "1kBcD_EFgHiJkLmNoPqRsTuWwXyZ0123456789abcdO"
+    "January": "1bv0_DB47DF8YBiPJnTHw434H1RBQv3q88lPXNJmbGrk",
+    "February": "1Ov8LY7uTRfeIEotykBzYmfTQVGbrPTrSQ5sfNrhUr5o",
+    "March": "1OXyX2EELj2y6zhwBSCOHEr65rs4MGMwWIIlY-LerLbE",
+    "April": "1GAcOhju2t0RThGFTbIHCru3Th9sOg4eFbPONpbAOOn4",
+    "May": "1ghOE4X6a535lIYCaRM030JwcJnwOX4ScPJ0LVOVO2to",
+    "June": "1m3hkzV-O3YOReVULgh7Ii9VsS8r066UJyYOnRni7LrE",
+    "July": "13LDPskjeuWS2ShoNtwvYTD6x_4CNJvVHQfMe5eO7n50",
+    "August": "1uA_McdI8Nsr7X-SPqlFqNzYcJ57IxixLw9mtlh6XCwE",
+    "September": "1D9OLcv61lTrLpWey1uHU7MR5g-ChOdq7gTMMheWe1Ro",
+    "October": "1maEzzfMLnfkynj7rZ8KiGoXT1fLMB1tK7Itj3tsRxeM",
+    "November": "1AzZfkYiDCHwhoo-473Qh7IDYL3Mn6eEcMvq6ZYCjHx4",
+    "December": "1JwiQXRm_3NXYPjaBaqVSUaCY5J5Dk0tY2jnt21XQWl8"
 };
+
+// GID các sheet Day 1–31 (áp dụng cho tất cả các tháng vì cấu trúc giống nhau)
+const dayGids = {
+    "Day 1": 0, "Day 2": 67605103, "Day 3": 1052609443, "Day 4": 1424934325,
+    "Day 5": 741641761, "Day 6": 2067969392, "Day 7": 362117292, "Day 8": 709125583,
+    "Day 9": 352655699, "Day 10": 2050956779, "Day 11": 1046007689, "Day 12": 674856308,
+    "Day 13": 816439500, "Day 14": 645750547, "Day 15": 45774549, "Day 16": 612734508,
+    "Day 17": 1591895966, "Day 18": 496660734, "Day 19": 28020789, "Day 20": 854584720,
+    "Day 21": 1034683200, "Day 22": 223176623, "Day 23": 1860428488, "Day 24": 1834671294,
+    "Day 25": 387334056, "Day 26": 326193982, "Day 27": 990219618, "Day 28": 1159976380,
+    "Day 29": 441754291, "Day 30": 348119132, "Day 31": 1420847907
+};
+
+let currentMonthName = "January"; // Biến global để theo dõi tháng hiện tại
 
 // Tạo URL truy cập Google Sheets theo tháng
 const monthToURL = {};
 for (const [month, id] of Object.entries(sheetLinks)) {
-  monthToURL[month] = `https://docs.google.com/spreadsheets/d/${id}/edit#gid=761478464`;
+    // Đảm bảo GID mặc định cho link tháng là đúng theo ý bạn
+    monthToURL[month] = `https://docs.google.com/spreadsheets/d/${id}/edit#gid=761478464`;
 }
 
 // DOM elements
@@ -33,166 +48,159 @@ const list = document.getElementById('monthList');
 const picker = document.getElementById('monthPicker');
 
 // Tạo danh sách tháng nhiều lần để scroll tuần hoàn
-const months = Array(100).fill(originalMonths).flat();
+const numCopiesOfMonths = 100; // Số lượng bản sao của 12 tháng
+const months = Array(numCopiesOfMonths).fill(originalMonths).flat();
 
-let itemHeight = 0; // chiều cao 1 item tháng
-let openedTabs = {}; // quản lý tab đã mở theo tháng
-
-
-// ───── Hàm tự động chọn tháng hiện tại khi mở web ─────
-function autoSelectCurrentMonth() {
-  const now = new Date();
-  const currentMonthIndex = now.getMonth(); // 0–11
-  const monthList = document.querySelectorAll('#monthList li');
-  const monthName = monthList[currentMonthIndex].textContent;
-
-  // Set selected text
-  document.querySelector('#selectedMonth .month-text').textContent = monthName;
-
-  // Set ngày bắt đầu và kết thúc
-  const year = now.getFullYear();
-  const start = `01/${currentMonthIndex + 1}/${year}`;
-  const endDate = new Date(year, currentMonthIndex + 1, 0);
-  const end = `${endDate.getDate()}/${currentMonthIndex + 1}/${year}`;
-
-  document.getElementById('start-day').textContent = start;
-  document.getElementById('end-day').textContent = end;
-}
-
-// ───── Hàm xử lý click tháng trong danh sách ─────
-function setupMonthClickHandler() {
-  const list = document.getElementById('monthList');
-  list.addEventListener('click', e => {
-    if (e.target.tagName !== 'LI') return;
-
-    const selectedText = e.target.textContent;
-    document.querySelector('#selectedMonth .month-text').textContent = selectedText;
-
-    const monthIndex = [...list.children].indexOf(e.target);
-    const year = new Date().getFullYear();
-    const start = `01/${monthIndex + 1}/${year}`;
-    const endDate = new Date(year, monthIndex + 1, 0);
-    const end = `${endDate.getDate()}/${monthIndex + 1}/${year}`;
-
-    document.getElementById('start-day').textContent = start;
-    document.getElementById('end-day').textContent = end;
-
-    drawChart();
-  });
-}
-
-
-
-// Tạo danh sách li tháng và gắn sự kiện
+let itemHeight = 0; // Chiều cao 1 item tháng (sẽ được tính toán động)
+let openedTabs = {}; // Quản lý tab đã mở theo tháng
+// --- HÀM TẠO VÀ GÁN SỰ KIỆN CHO CÁC PHẦN TỬ THÁNG TRONG DANH SÁCH ---
 months.forEach(m => {
-  const li = document.createElement("li");
-  li.textContent = m;
+    const li = document.createElement("li");
+    li.textContent = m;
+    let clickTimeout; // Để phân biệt single/double click
+    let isDblClick = false; // Biến cờ để theo dõi double click
 
-  let clickTimeout;
+    li.addEventListener("click", (e) => {
+        clearTimeout(clickTimeout);
+        isDblClick = false; // Reset cờ cho mỗi click mới
 
-  li.addEventListener("click", () => {
-    clearTimeout(clickTimeout);
-    clickTimeout = setTimeout(() => {
-      const month = li.textContent;
-      selected.textContent = month;
-      updateCalendarDates(month);
-      picker.classList.remove("show");
+        const clickedLi = e.currentTarget;
+        const monthText = clickedLi.textContent;
 
-      drawChart();
-      updateDashboard(month);
-    }, 250);
-  });
+        // **Bước 1: Ngay lập tức cập nhật tháng được chọn và lịch**
+        // Điều này đảm bảo phản hồi tức thì cho người dùng khi click đơn
+        selected.textContent = monthText;
+        updateCalendarDates(monthText); // Cập nhật lịch ngày
+        
+        // Gọi updateDashboard và drawChart NGAY LẬP TỨC để thấy phản hồi
+        updateDashboard(monthText); 
+        drawChart();
 
-  // PHẦN NÀY ĐÃ ĐƯỢC KHÔI PHỤC ĐỂ ĐẠT ĐƯỢC YÊU CẦU CỦA BẠN
-  li.addEventListener("dblclick", () => {
-    clearTimeout(clickTimeout); // Xóa bỏ timeout của single click nếu có
-    const month = li.textContent;
-    const url = monthToURL[month];
-
-    if (url) {
-      // 1. Kiểm tra xem tab cho tháng này đã được mở bởi ứng dụng và chưa bị đóng chưa
-      if (openedTabs[month] && !openedTabs[month].closed) {
-        openedTabs[month].focus(); // Nếu có, đưa tab cũ lên tiêu điểm (focus)
-      } else {
-        // 2. Nếu chưa, mở một tab mới và lưu lại tham chiếu của tab đó
-        const newTab = window.open(url, "_blank"); // Mở trong một tab mới
-        if (newTab) {
-          openedTabs[month] = newTab; // Lưu tham chiếu để sử dụng cho lần sau
-        } else {
-          // Nếu trình duyệt chặn pop-up
-          alert("Trình duyệt đã chặn pop-up. Hãy bật cho phép.");
+        // Bước 2: Cuộn mượt đến tháng đó (nếu cần)
+        if (itemHeight === 0) {
+            itemHeight = clickedLi.offsetHeight;
         }
-      }
-    }
-  });
+        if (itemHeight > 0) { // Chỉ cuộn nếu itemHeight hợp lệ
+            const targetScrollTop = clickedLi.offsetTop - (wrapper.clientHeight / 2) + (itemHeight / 2);
+            wrapper.scrollTo({
+                top: targetScrollTop,
+                behavior: 'smooth'
+            });
+        } else {
+            console.warn("itemHeight is 0, cannot calculate scroll position accurately for click.");
+        }
 
-  list.appendChild(li);
+
+        // Bước 3: Đặt timeout để chờ xem có phải double click không
+        clickTimeout = setTimeout(() => {
+            // Chỉ đóng picker nếu KHÔNG CÓ double click xảy ra trong khoảng thời gian chờ
+            if (!isDblClick) {
+                picker.classList.remove("show");
+                isPickerOpen = false;
+                // Các hàm cập nhật đã được gọi ở trên nên không cần gọi lại ở đây
+            }
+        }, 250); // Khoảng thời gian chờ để xác định single/double click
+    });
+
+    li.addEventListener("dblclick", () => {
+        clearTimeout(clickTimeout); // Hủy bỏ timeout của single click để không bị gọi cùng lúc
+        isDblClick = true; // Đặt cờ double click thành true
+
+        const month = li.textContent;
+        const url = monthToURL[month];
+
+        if (url) {
+            if (openedTabs[month] && !openedTabs[month].closed) {
+                openedTabs[month].focus();
+            } else {
+                const newTab = window.open(url, "_blank");
+                if (newTab) {
+                    openedTabs[month] = newTab;
+                } else {
+                    alert("Trình duyệt đã chặn pop-up. Vui lòng cho phép để mở link.");
+                }
+            }
+        }
+    });
+
+    list.appendChild(li);
 });
 
+// --- HÀM QUẢN LÝ LỊCH VÀ NGÀY ---
 
-
-
-
-
-// Hàm tạo ngày trong calendar
+// Hàm tạo các ô ngày trong lưới lịch
 function createCalendarDays(endDay) {
-  const grid = document.getElementById("calendar-grid");
-  grid.innerHTML = "";
+    const grid = document.getElementById("calendar-grid");
+    grid.innerHTML = ""; // Xóa các ngày cũ
 
-  for (let day = 1; day <= 31; day++) {
-    const link = document.createElement("a");
-
-    // Link mở Google Sheet ngày (thay your_sheet_id_here bằng ID tương ứng)
-    // Bạn có thể tùy chỉnh link ngày theo sheet tháng nếu muốn
-    link.href = `https://docs.google.com/spreadsheets/d/your_sheet_id_here/edit#gid=0&range=A${day}`;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-
-    const dayDiv = document.createElement("div");
-    dayDiv.className = "calendar-day";
-    dayDiv.textContent = day;
-
-    if (day > endDay) {
-      dayDiv.classList.add("hidden");
-    } else if (day === endDay) {
-      dayDiv.classList.add("last");
-      if (day === 31) dayDiv.classList.add("last-31");
+    const sheetId = sheetLinks[currentMonthName]; // Lấy Sheet ID dựa trên tháng hiện tại
+    if (!sheetId) {
+        console.error("Không tìm thấy Sheet ID cho tháng:", currentMonthName);
+        return;
     }
 
-    link.appendChild(dayDiv);
-    grid.appendChild(link);
-  }
+    for (let day = 1; day <= 31; day++) {
+        const link = document.createElement("a");
+        const gid = dayGids[`Day ${day}`]; // Lấy GID cụ thể cho từng ngày
+
+        if (gid !== undefined) {
+            link.href = `https://docs.google.com/spreadsheets/d/${sheetId}/edit#gid=${gid}`;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+        } else {
+            // Fallback nếu GID không tồn tại (không nên xảy ra với cấu trúc dayGids hiện tại)
+            link.href = "#";
+            link.onclick = (e) => e.preventDefault();
+        }
+
+        const dayDiv = document.createElement("div");
+        dayDiv.className = "calendar-day";
+        dayDiv.textContent = day;
+
+        // Ẩn các ngày vượt quá số ngày của tháng hoặc thêm class đặc biệt
+        if (day > endDay) {
+            dayDiv.classList.add("hidden");
+        } else if (day === endDay) {
+            dayDiv.classList.add("last");
+            if (day === 31) {
+                dayDiv.classList.add("last-31");
+                link.classList.add("grid-span-full"); // Thêm class nếu muốn ô ngày 31 chiếm hết chiều ngang
+            }
+        }
+
+        link.appendChild(dayDiv);
+        grid.appendChild(link);
+    }
 }
 
-// Cập nhật ngày đầu-cuối hiển thị calendar
+// Cập nhật lưới lịch dựa trên ngày cuối tháng đang hiển thị
 function updateCalendarGridFromEndDay() {
-  const endDayText = document.getElementById("end-day").textContent;
-  const [day] = endDayText.split("/");
-  const endDay = parseInt(day);
-  if (!isNaN(endDay)) createCalendarDays(endDay);
+    const endDayText = document.getElementById("end-day").textContent;
+    const [day] = endDayText.split("/");
+    const endDay = parseInt(day, 10); // Đảm bảo parse base 10
+    if (!isNaN(endDay)) {
+        createCalendarDays(endDay);
+    }
 }
 
-// Cập nhật range ngày bắt đầu và kết thúc theo tháng
-function setCalendarDateRange(monthIndex = 1) {
-  const year = new Date().getFullYear();
-  const lastDay = new Date(year, monthIndex, 0).getDate();
-  const mm = `0${monthIndex}`.slice(-2);
-  document.getElementById("start-day").textContent = `01/${mm}/${year}`;
-  document.getElementById("end-day").textContent = `${lastDay}/${mm}/${year}`;
-}
-
-// Cập nhật calendar khi chọn tháng
+// Cập nhật phạm vi ngày bắt đầu và kết thúc trên giao diện
 function updateCalendarDates(monthName) {
-  const monthIndex = originalMonths.indexOf(monthName);
-  const year = new Date().getFullYear();
-  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-  const mm = (monthIndex + 1).toString().padStart(2, '0');
+    const monthIndex = originalMonths.indexOf(monthName);
+    if (monthIndex === -1) return;
 
-  document.getElementById("start-day").textContent = `01/${mm}/${year}`;
-  document.getElementById("end-day").textContent = `${daysInMonth}/${mm}/${year}`;
+    currentMonthName = monthName; // CẬP NHẬT BIẾN GLOBAL currentMonthName quan trọng
+    const year = new Date().getFullYear();
+    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate(); // Lấy số ngày trong tháng
+    const mm = (monthIndex + 1).toString().padStart(2, '0'); // Định dạng tháng (01-12)
 
-  updateCalendarGridFromEndDay();
+    document.getElementById("start-day").textContent = `01/${mm}/${year}`;
+    document.getElementById("end-day").textContent = `${daysInMonth}/${mm}/${year}`;
+
+    updateCalendarGridFromEndDay(); // Cập nhật lại lưới ngày
 }
+
+
+// --- HÀM CUỘN VÀ HIỂN THỊ THÁNG ĐƯỢC CHỌN ---
 
 // Scroll tới tháng trong danh sách tháng
 function scrollToMonth(targetMonth = "January") {
@@ -213,46 +221,58 @@ function scrollToMonth(targetMonth = "January") {
   });
 }
 
+// Cập nhật hiệu ứng highlight cho các tháng xung quanh vị trí cuộn
 function updateHighlight() {
-  const center = wrapper.scrollTop + wrapper.clientHeight / 2;
-  list.querySelectorAll("li").forEach(item => {
-    const dist = Math.abs((item.offsetTop + item.offsetHeight / 2) - center);
-    if (dist < 5) {
-      item.style.opacity = 1;
-      item.style.color = '#aaa';
-      item.style.textShadow = '0 0 5px rgba(0,0,0,0.3)';
-    } else if (dist < 40) {
-      item.style.opacity = 1;
-      item.style.color = '#646464';
-      item.style.textShadow = '0 5px 1px rgba(0,0,0,0.2)';
-    } else {
-      item.style.opacity = 0.25;
-      item.style.color = '#aaa';
-      item.style.textShadow = 'none';
-    }
-  });
+    const center = wrapper.scrollTop + wrapper.clientHeight / 2;
+    list.querySelectorAll("li").forEach(item => {
+        const dist = Math.abs((item.offsetTop + item.offsetHeight / 2) - center);
+
+        if (dist < 5) { // Tháng ở chính giữa
+            item.style.opacity = 1;
+            item.style.color = '#aaa';
+            item.style.textShadow = '0 0 5px rgba(0,0,0,0.3)';
+        } else if (dist < 40) { // Các tháng gần trung tâm
+            item.style.opacity = 1;
+            item.style.color = '#646464';
+            item.style.textShadow = '0 5px 1px rgba(0,0,0,0.2)';
+        } else { // Các tháng xa trung tâm
+            item.style.opacity = 0.25;
+            item.style.color = '#aaa';
+            item.style.textShadow = 'none';
+        }
+    });
 }
 
-
-// Cập nhật selected tháng hiện tại dựa trên scroll
+// Cập nhật tháng đang được chọn (hiển thị trên `selectedMonth`) dựa vào vị trí cuộn
 function updateSelected() {
-  const center = wrapper.scrollTop + wrapper.clientHeight / 2;
-  let closest = null, min = Infinity;
+    const center = wrapper.scrollTop + wrapper.clientHeight / 2;
+    let closestItem = null;
+    let minDistance = Infinity;
 
-  list.querySelectorAll("li").forEach((item, i) => {
-    const dist = Math.abs((item.offsetTop + item.offsetHeight / 2) - center);
-    if (dist < min) {
-      min = dist;
-      closest = item;
+    list.querySelectorAll("li").forEach(item => {
+        const itemCenter = item.offsetTop + item.offsetHeight / 2;
+        const distance = Math.abs(itemCenter - center);
+
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestItem = item;
+        }
+    });
+
+    if (closestItem) {
+        const chosenMonth = closestItem.textContent;
+        // Chỉ cập nhật DOM và lịch nếu tháng thực sự thay đổi để tránh re-render không cần thiết
+        if (selected.textContent !== chosenMonth) {
+            selected.textContent = chosenMonth;
+            updateCalendarDates(chosenMonth);
+            // Các hàm cập nhật dashboard/chart có thể được gọi ở đây nếu bạn muốn chúng
+            // được cập nhật ngay lập tức khi cuộn dừng lại.
+            // updateDashboard(chosenMonth);
+            // drawChart();
+        }
     }
-  });
-
-  if (closest) {
-    const chosen = closest.textContent;
-    selected.textContent = chosen;
-    updateCalendarDates(chosen);
-  }
 }
+
 
 
 // Scroll khi mở web:
@@ -281,56 +301,52 @@ selected.addEventListener("click", e => {
 });
 
 
-
+// Sự kiện click bên ngoài picker để đóng
 document.addEventListener("click", e => {
-  if (!picker.contains(e.target)) {
-    picker.classList.remove("show");
-    isPickerOpen = false;
-  }
+    // Nếu click không phải trên picker và cũng không phải trên `selectedMonth`, thì đóng picker
+    if (!picker.contains(e.target) && !selected.contains(e.target)) {
+        picker.classList.remove("show");
+        isPickerOpen = false;
+    }
 });
 
+// Sự kiện cuộn trên wrapper tháng
 wrapper.addEventListener('scroll', () => {
-  updateHighlight();
-
-  clearTimeout(wrapper.updateTimeout);
-  wrapper.updateTimeout = setTimeout(updateSelected, 300);
-
-  // Bỏ phần tự scroll mượt khi scroll xong:
-  // clearTimeout(wrapper.isScrolling);
-  // wrapper.isScrolling = setTimeout(() => {
-  //   const nearest = Math.round(wrapper.scrollTop / itemHeight);
-  //   wrapper.scrollTo({ top: nearest * itemHeight, behavior: 'smooth' });
-  // }, 50);
+    requestAnimationFrame(updateHighlight); // Cập nhật highlight mượt mà hơn
+    clearTimeout(wrapper.updateTimeout); // Xóa timeout cũ
+    // Đặt timeout để updateSelected chỉ chạy khi người dùng dừng cuộn một chút
+    wrapper.updateTimeout = setTimeout(updateSelected, 150);
 });
 
-
-//Scroll chuột:
+// Ngăn cuộn trang khi cuộn chuột trên wrapper và điều chỉnh tốc độ cuộn tháng
 wrapper.addEventListener('wheel', e => {
-  e.preventDefault();
-  wrapper.scrollTop += e.deltaY / 2.5;
-
-  if (isPickerOpen && !hasUserScrolled) {
-    hasUserScrolled = true;
-  }
+    e.preventDefault(); // Ngăn cuộn trang chính
+    wrapper.scrollTop += e.deltaY * 0.4; // Điều chỉnh tốc độ cuộn
 }, { passive: false });
 
-//nhấn lên xuống:
+
+// Sự kiện nhấn phím lên/xuống để cuộn tháng
 document.addEventListener("keydown", e => {
-  if (!picker.classList.contains("show")) return;
+    if (!isPickerOpen) return; // Chỉ xử lý khi picker đang mở
 
-  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-    e.preventDefault(); // Ngăn cuộn trang
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault(); // Ngăn cuộn trang chính
 
-    if (!itemHeight) itemHeight = list.children[0].offsetHeight;
+        // Đảm bảo itemHeight đã có giá trị
+        if (itemHeight === 0 && list.children.length > 0) {
+            itemHeight = list.children[0].offsetHeight;
+        }
+        if (itemHeight > 0) {
+            const direction = e.key === "ArrowDown" ? 1 : -1;
+            wrapper.scrollTop += direction * itemHeight; // Cuộn từng itemHeight
 
-    const direction = e.key === "ArrowDown" ? 1 : -1;
-    wrapper.scrollTop += direction * itemHeight;
-
-    // Cập nhật highlight + selected sau khi scroll
-    clearTimeout(wrapper.updateTimeout);
-    wrapper.updateTimeout = setTimeout(updateSelected, 300);
-  }
+            // Cập nhật highlight và tháng được chọn sau khi cuộn bằng phím
+            clearTimeout(wrapper.updateTimeout);
+            wrapper.updateTimeout = setTimeout(updateSelected, 150);
+        }
+    }
 });
+
 
 
 // Nhấn Enter chỉ chọn tháng và đóng picker, không mở link
@@ -373,6 +389,7 @@ const sheetId = sheetLinks[month];               // ID từ sheetLinks
 
 
 
+
 // Hàm mẫu cập nhật dashboard bên trái
 function updateDashboard(monthName) {
   // TODO: Viết code cập nhật biểu đồ, dữ liệu tổng lương hoặc phần dashboard bên trái theo tháng
@@ -396,4 +413,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
   scrollToMonth(originalMonths[defaultMonthIndex - 1]);  // Scroll khi load trang
 });
-
