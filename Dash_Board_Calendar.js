@@ -128,34 +128,24 @@ months.forEach(m => {
 
 // --- HÀM QUẢN LÝ LỊCH VÀ NGÀY ---
 
-// Hàm tạo các ô ngày trong lưới lịch
 function createCalendarDays(endDay) {
     const grid = document.getElementById("calendar-grid");
     grid.innerHTML = ""; // Xóa các ngày cũ
 
-    const sheetId = sheetLinks[currentMonthName]; // Lấy Sheet ID dựa trên tháng hiện tại
+    // Lấy Sheet ID dựa trên tháng hiện tại (được cập nhật trong biến global currentMonthName)
+    const sheetId = sheetLinks[currentMonthName];
     if (!sheetId) {
         console.error("Không tìm thấy Sheet ID cho tháng:", currentMonthName);
         return;
     }
 
     for (let day = 1; day <= 31; day++) {
-        const link = document.createElement("a");
-        const gid = dayGids[`Day ${day}`]; // Lấy GID cụ thể cho từng ngày
-
-        if (gid !== undefined) {
-            link.href = `https://docs.google.com/spreadsheets/d/${sheetId}/edit#gid=${gid}`;
-            link.target = "_blank";
-            link.rel = "noopener noreferrer";
-        } else {
-            // Fallback nếu GID không tồn tại (không nên xảy ra với cấu trúc dayGids hiện tại)
-            link.href = "#";
-            link.onclick = (e) => e.preventDefault();
-        }
-
         const dayDiv = document.createElement("div");
         dayDiv.className = "calendar-day";
         dayDiv.textContent = day;
+
+        const link = document.createElement("a");
+        const gid = dayGids[`Day ${day}`];
 
         // Ẩn các ngày vượt quá số ngày của tháng hoặc thêm class đặc biệt
         if (day > endDay) {
@@ -164,8 +154,41 @@ function createCalendarDays(endDay) {
             dayDiv.classList.add("last");
             if (day === 31) {
                 dayDiv.classList.add("last-31");
-                link.classList.add("grid-span-full"); // Thêm class nếu muốn ô ngày 31 chiếm hết chiều ngang
+                link.classList.add("grid-span-full");
             }
+        }
+
+        if (gid !== undefined) {
+            const fullUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/edit#gid=${gid}`;
+            link.href = fullUrl; // Vẫn set href để người dùng có thể chuột phải -> open in new tab nếu muốn
+
+            // *** PHẦN CHỈNH SỬA QUAN TRỌNG BẮT ĐẦU TỪ ĐÂY ***
+            link.addEventListener('click', (e) => {
+                e.preventDefault(); // Ngăn hành vi mặc định của thẻ <a> (không mở link ngay lập tức)
+
+                // Kiểm tra xem tab cho tháng hiện tại đã tồn tại và còn mở không
+                const monthTab = openedTabs[currentMonthName];
+                if (monthTab && !monthTab.closed) {
+                    // Nếu tab đã mở -> chỉ cập nhật URL của tab đó và đưa nó lên phía trước
+                    monthTab.location.href = fullUrl;
+                    monthTab.focus();
+                } else {
+                    // Nếu chưa có tab hoặc tab đã bị đóng -> mở tab mới
+                    const newTab = window.open(fullUrl, "_blank");
+                    if (newTab) {
+                        // Lưu lại tham chiếu đến tab vừa mở để quản lý cho các lần click sau
+                        openedTabs[currentMonthName] = newTab;
+                    } else {
+                        // Thông báo cho người dùng nếu trình duyệt chặn pop-up
+                        alert("Trình duyệt đã chặn pop-up. Vui lòng cho phép để mở link.");
+                    }
+                }
+            });
+            // *** KẾT THÚC PHẦN CHỈNH SỬA ***
+
+        } else {
+            link.href = "#";
+            link.onclick = (e) => e.preventDefault();
         }
 
         link.appendChild(dayDiv);
