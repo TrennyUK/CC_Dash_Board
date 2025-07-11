@@ -6,30 +6,53 @@ const originalMonths = [
 
 // ID Google Sheets từng tháng
 const sheetLinks = {
-    "January": "1bv0_DB47DF8YBiPJnTHw434H1RBQv3q88lPXNJmbGrk",
-    "February": "1Ov8LY7uTRfeIEotykBzYmfTQVGbrPTrSQ5sfNrhUr5o",
-    "March": "1OXyX2EELj2y6zhwBSCOHEr65rs4MGMwWIIlY-LerLbE",
-    "April": "1GAcOhju2t0RThGFTbIHCru3Th9sOg4eFbPONpbAOOn4",
-    "May": "1ghOE4X6a535lIYCaRM030JwcJnwOX4ScPJ0LVOVO2to",
-    "June": "1m3hkzV-O3YOReVULgh7Ii9VsS8r066UJyYOnRni7LrE",
-    "July": "13LDPskjeuWS2ShoNtwvYTD6x_4CNJvVHQfMe5eO7n50",
-    "August": "1uA_McdI8Nsr7X-SPqlFqNzYcJ57IxixLw9mtlh6XCwE",
-    "September": "1D9OLcv61lTrLpWey1uHU7MR5g-ChOdq7gTMMheWe1Ro",
-    "October": "1maEzzfMLnfkynj7rZ8KiGoXT1fLMB1tK7Itj3tsRxeM",
-    "November": "1AzZfkYiDCHwhoo-473Qh7IDYL3Mn6eEcMvq6ZYCjHx4",
-    "December": "1JwiQXRm_3NXYPjaBaqVSUaCY5J5Dk0tY2jnt21XQWl8"
+  "January": "11QGch7ghMfThmF9cz8zgnQweHsWu9wrPPQloXz1kz5M",
+  "February": "1CJXGRwsfeTsiMsqA6lBgahX6FAnRdTRt6WGYvRwqKRA",
+  "March": "1QJF-Ivvcuhx-O3Hhi0j8ugc6c8p8X49ZAmrxwBqpvkI",
+  "April": "1Y2HXWchX4hbf6ppe32XMbWVHvBK9fKyjmLHvYe_NXd4",
+  "May": "13_mVmMxl8MtfBJI9fp3OdOwAjyUUEndBd7LR-EPUfQM",
+  "June": "1PEcgOa88ujeN5dAmY2GmtO6f-YWEvtb8pX6JO-Yds0I",
+  "July": "1JqxUjmwHspFm2yTGph1ArC5iWGMMkpKPidYK-7a1ttw",
+  "August": "1kGZgnqIbzxIhf7s37VjxqwezpZi2aqX_JTpv7_6bWFo",
+  "September": "1rYBTipDWg-bs7OKD6_jW51ZLGG4OOqxjGmXsPb6gUzM",
+  "October": "1HOoxvaiZnNx8tsRCQGwCNizLgYm9RGV12flRZ-t_42s",
+  "November": "1UvW9z9EPBNa0uzMrnyceMElaxVqUMlUek5mLHsR8EFQ",
+  "December": "1IHMCWJgDVdYJOyPbtwNGAzfGrMF0g5eolCt1-rji2Q0"
 };
 
 // GID các sheet Day 1–31 (áp dụng cho tất cả các tháng vì cấu trúc giống nhau)
 const dayGids = {
-    "Day 1": 0, "Day 2": 67605103, "Day 3": 1052609443, "Day 4": 1424934325,
-    "Day 5": 741641761, "Day 6": 2067969392, "Day 7": 362117292, "Day 8": 709125583,
-    "Day 9": 352655699, "Day 10": 2050956779, "Day 11": 1046007689, "Day 12": 674856308,
-    "Day 13": 816439500, "Day 14": 645750547, "Day 15": 45774549, "Day 16": 612734508,
-    "Day 17": 1591895966, "Day 18": 496660734, "Day 19": 28020789, "Day 20": 854584720,
-    "Day 21": 1034683200, "Day 22": 223176623, "Day 23": 1860428488, "Day 24": 1834671294,
-    "Day 25": 387334056, "Day 26": 326193982, "Day 27": 990219618, "Day 28": 1159976380,
-    "Day 29": 441754291, "Day 30": 348119132, "Day 31": 1420847907
+  "Day 1": 1696580395,
+  "Day 2": 1306559519,
+  "Day 3": 2066952841,
+  "Day 4": 1950822064,
+  "Day 5": 1903501665,
+  "Day 6": 514630118,
+  "Day 7": 1197353259,
+  "Day 8": 1360478693,
+  "Day 9": 797526652,
+  "Day 10": 2062832710,
+  "Day 11": 699178801,
+  "Day 12": 1056306774,
+  "Day 13": 150060271,
+  "Day 14": 1905565042,
+  "Day 15": 2137046019,
+  "Day 16": 933627048,
+  "Day 17": 565644152,
+  "Day 18": 1481781800,
+  "Day 19": 917245140,
+  "Day 20": 2101956321,
+  "Day 21": 1600440112,
+  "Day 22": 369851112,
+  "Day 23": 275505946,
+  "Day 24": 579495847,
+  "Day 25": 1307417729,
+  "Day 26": 630397502,
+  "Day 27": 1806841382,
+  "Day 28": 1418531830,
+  "Day 29": 408836373,
+  "Day 30": 869131913,
+  "Day 31": 1713688863
 };
 
 let currentMonthName = "January"; // Biến global để theo dõi tháng hiện tại
