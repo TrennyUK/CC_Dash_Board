@@ -84,46 +84,32 @@ months.forEach(m => {
     let isDblClick = false; // Biến cờ để theo dõi double click
 
     li.addEventListener("click", (e) => {
-        clearTimeout(clickTimeout);
-        isDblClick = false; // Reset cờ cho mỗi click mới
+    clearTimeout(clickTimeout);
+    isDblClick = false; 
 
-        const clickedLi = e.currentTarget;
-        const monthText = clickedLi.textContent;
+    const clickedLi = e.currentTarget;
+    const monthText = clickedLi.textContent;
+    
+    // Chỉ cập nhật các thành phần giao diện
+    selected.textContent = monthText;
+    updateCalendarDates(monthText); 
+    
+    // Sau đó gọi bộ não xử lý dữ liệu
+    drawChart();
 
-        // **Bước 1: Ngay lập tức cập nhật tháng được chọn và lịch**
-        // Điều này đảm bảo phản hồi tức thì cho người dùng khi click đơn
-        selected.textContent = monthText;
-        updateCalendarDates(monthText); // Cập nhật lịch ngày
-        
-        // Gọi updateDashboard và drawChart NGAY LẬP TỨC để thấy phản hồi
-        updateDashboard(monthText); 
-        drawChart();
-
-        // Bước 2: Cuộn mượt đến tháng đó (nếu cần)
-        if (itemHeight === 0) {
-            itemHeight = clickedLi.offsetHeight;
+    if (itemHeight === 0) itemHeight = clickedLi.offsetHeight;
+    if (itemHeight > 0) {
+        const targetScrollTop = clickedLi.offsetTop - (wrapper.clientHeight / 2) + (itemHeight / 2);
+        wrapper.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
+    }
+    
+    clickTimeout = setTimeout(() => {
+        if (!isDblClick) {
+            picker.classList.remove("show");
+            isPickerOpen = false;
         }
-        if (itemHeight > 0) { // Chỉ cuộn nếu itemHeight hợp lệ
-            const targetScrollTop = clickedLi.offsetTop - (wrapper.clientHeight / 2) + (itemHeight / 2);
-            wrapper.scrollTo({
-                top: targetScrollTop,
-                behavior: 'smooth'
-            });
-        } else {
-            console.warn("itemHeight is 0, cannot calculate scroll position accurately for click.");
-        }
-
-
-        // Bước 3: Đặt timeout để chờ xem có phải double click không
-        clickTimeout = setTimeout(() => {
-            // Chỉ đóng picker nếu KHÔNG CÓ double click xảy ra trong khoảng thời gian chờ
-            if (!isDblClick) {
-                picker.classList.remove("show");
-                isPickerOpen = false;
-                // Các hàm cập nhật đã được gọi ở trên nên không cần gọi lại ở đây
-            }
-        }, 250); // Khoảng thời gian chờ để xác định single/double click
-    });
+    }, 250);
+});
 
     li.addEventListener("dblclick", () => {
         clearTimeout(clickTimeout); // Hủy bỏ timeout của single click để không bị gọi cùng lúc
@@ -397,13 +383,11 @@ document.addEventListener("keydown", e => {
 
 // Nhấn Enter chỉ chọn tháng và đóng picker, không mở link
 document.addEventListener("keydown", e => {
-  if (e.key !== "Enter") return;
-
-  const isOpen = picker.classList.contains("show");
-  if (!isOpen) return;
+  if (e.key !== "Enter" || !picker.classList.contains("show")) return;
 
   e.preventDefault();
   picker.classList.remove("show");
+  isPickerOpen = false;
 
   const center = wrapper.scrollTop + wrapper.clientHeight / 2;
   let closest = null, min = Infinity;
@@ -418,18 +402,13 @@ document.addEventListener("keydown", e => {
   });
 
   if (closest) {
-  const month = closest.textContent;             // "February"
-const sheetId = sheetLinks[month];               // ID từ sheetLinks
-  selected.textContent = month;
-
-  updateCalendarDates(month);
-  drawChart();
-
-  const monthIndex = originalMonths.indexOf(month) + 1;
-  const sheetName = `Month ${monthIndex}`;       // có ra đúng "Month 2" không?
-  fetchSalaryFromSheet(sheetId, sheetName);
-}
-
+    const month = closest.textContent;
+    selected.textContent = month;
+    updateCalendarDates(month);
+    
+    // CHỈ CẦN GỌI drawChart(), nó sẽ lo tất cả
+    drawChart();
+  }
 });
 
 
