@@ -12,8 +12,8 @@ const RANGE_NAMES = 'Day 1!C5:C49';
 // 📌 sheetName: "Month 1", "Month 2", v.v...
 // 📌 Lấy giá trị từ ô AM35 và hiển thị vào .salary
 function fetchSalaryFromSheet(sheetId, sheetName) {
-    const CELL = 'AN50';
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(SHEET_ID_HOURS)}!${CELL}?key=${API_KEY}`;
+    const CELL = 'AM50';
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(sheetName)}!${CELL}?key=${API_KEY}`;
 
     fetch(url)
         .then(response => {
