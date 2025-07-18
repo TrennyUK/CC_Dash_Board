@@ -97,7 +97,7 @@ async function drawChart() {
     try {
         const startDayText = document.getElementById("start-day").textContent;
         const monthNumber = parseInt(startDayText.split("/")[1]);
-        const RANGE_HOURS_DYNAMIC = `Month ${monthNumber}!AJ5:AJ34`;
+        const RANGE_HOURS_DYNAMIC = `Month ${monthNumber}!AJ5:AJ49`;
 
         const [namesRaw, hoursRaw] = await Promise.all([
             fetchSheetData(SHEET_ID_NAMES, RANGE_NAMES),
